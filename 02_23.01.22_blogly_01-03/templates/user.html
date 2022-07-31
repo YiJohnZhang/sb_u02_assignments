@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table>
+    <tr></tr>
+        <td rowspan="3">
+            {# Extract photo and name #}
+            <img src="{{userInformation.image_url | default(url_for('static', filename='default_pic.jpg'), True)}}" alt="Picture of {{ userInformation.fullName }}">
+        </td>
+        <td>
+            {# EXTRACT name#}
+            <h1>{{ userInformation.fullName }}</h1>
+            {# extract userID from userInformation #}
+            <form class="inline" action='/users/{{userInformation.id}}/edit' method='get'>
+                <button>Edit</button>
+            </form>
+            <form class="inline" action='/users/{{userInformation.id}}/delete' method='get'>
+                <button>Delete</button>
+            </form>
+        </td>
+        <tr>
+            <td>
+                <p>Filler text.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Lorem ispum</p>
+                <a href="/users">&lt; Return to list of users</a>
+            </td>
+        </tr>
+</table>
+{% endblock content %}

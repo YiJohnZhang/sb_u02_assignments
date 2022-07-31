@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table>
+    <tr></tr>
+        <td rowspan="3">
+            {# User Photo} #}
+            <img src="{{userInformation.image_url | default(url_for('static', filename='default_pic.jpg'), True)}}" alt="Picture of {{ userInformation.fullName }}">
+        </td>
+        <td>
+            {# User Name} #}
+            <h1>{{ userInformation.fullName }}</h1>
+            {# extract userID from userInformation #}
+            <form class='inline' action='/users/{{userInformation.id}}/edit' method='GET'>
+                <button class="btn btn-primary">Edit</button>
+            </form>
+            <form class='inline' action='/users/{{userInformation.id}}/delete' method='GET'>
+                <button class="btn btn-danger">Delete</button>
+            </form>
+        </td>
+        <tr>
+            <td>
+                <ul>
+                    {% for post in userPosts %}
+                        <li><a href="/posts/{{post.id}}">{{ post.displayedPostTitle }}</a></li>
+                    {% endfor %}
+                    <form class='' action='/users/{{userInformation.id}}/posts/new' method='GET'>
+                        <button class="btn btn-primary">Add Post</button>
+                    </form>
+
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Lorem ispum</p>
+                <a href="/users">&lt; Return to list of users</a>
+            </td>
+        </tr>
+</table>
+{% endblock content %}

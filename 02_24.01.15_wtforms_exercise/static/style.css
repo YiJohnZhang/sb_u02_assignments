@@ -1,0 +1,42 @@
+body{
+    padding:15px;
+}
+
+.inline {
+    display: inline;
+}
+.block{
+    display:block;
+}
+.inline-block{
+    display: inline-block;
+}
+
+.flashMessage-container{
+    list-style:none;
+}
+
+label{
+    vertical-align: top;
+}
+    .textarea{
+        width:100%;
+        min-height:50px
+    }
+
+img{}
+    .petImage{}
+    .petImage-medium{
+        width:300px;
+        height:300px;
+    }
+    .petImage-large{
+        width:600px;
+        height:600px;
+    }
+
+a{}
+    .petIsTrue{
+        color:green;
+        font-weight: bold;
+    }

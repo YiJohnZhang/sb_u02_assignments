@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{tagInformation.tag_name}}</h1>
+<p>Posts containing the tag, <strong>{{tagInformation.tag_name}}</strong>:</p>
+<ul>
+    {% for posttag in postTagInformation %}
+        <li><a href="/posts/{{posttag.postJoin.id}}">{{posttag.postJoin.title}}</a></li>
+    {% endfor %}
+</ul>
+<form class='inline' action='/tags/{{tagInformation.id}}/edit' method='GET'>
+    <button class="btn btn-primary">Edit</button>
+</form>
+<form class='inline' action='/tags/{{tagInformation.id}}/delete' method='GET'>
+    <button class="btn btn-danger">Delete</button>
+</form>
+
+{% endblock %}

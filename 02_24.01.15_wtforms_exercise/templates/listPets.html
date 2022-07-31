@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% for pet in petList %}
+        <div class="gridContainer inline-block">
+            <img src="{{pet.photo_url | default(url_for('static', filename='default_pic.jpg'), true)}}" alt="Picture of {{pet.name}}" class="petImage-medium">
+            <div class="">
+                <a href="/{{pet.id}}" class="petIs{{pet.available}}">{{pet.name}}</a><span>
+                    {% if pet.available %}
+                        is available!
+                    {% else %}
+                        is adopted.
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    {% endfor %}
+
+    <form action="/add" method='GET'>
+        <button type='submit' class="btn btn-success">Add Pet</button>
+    </form>
+
+{% endblock content %}

@@ -1,0 +1,45 @@
+<form method="POST">
+
+    {{form.hidden_tag()}}
+
+    {% if isAddForm %}
+
+        {% for formField in form if (formField.widget.input_type != 'hidden' and not formField.description) %}
+        <p>
+
+            {# if formField.description is null, addForm #}
+            
+            {{formField.label}}
+            {{formField}}
+
+            {% for formError in formField.errors %}
+
+                {{formError}}
+
+            {% endfor %}
+        </p>
+        {% endfor %}
+    
+    {% endif %}
+
+        {% for formField in form if (formField.widget.input_type != 'hidden' and formField.description )%}
+        <p>
+            {# if formField.description is not null #}
+            
+            {{formField.label}}
+            {{formField}}
+
+            {% for formError in formField.errors %}
+
+                {{formError}}
+
+            {% endfor %}
+        </p>
+        {% endfor %}
+
+    <a class="btn btn-outline-primary"href="/">Cancel</a>
+        <!-- 2022-07-14 note: changing this to just 'a' gives 100% work that it doesn't behave as submit-->
+        <!-- 00:48 of 24.01.08 (https://youtu.be/siQ5mT2HJ9I?t=48) -->
+    <button type='submit' class="btn btn-success">Submit</button>
+
+</form>

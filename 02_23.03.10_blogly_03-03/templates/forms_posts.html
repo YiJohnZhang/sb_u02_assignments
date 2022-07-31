@@ -1,0 +1,15 @@
+{% extends 'forms.html' %}
+
+{% block submissionButton %}
+
+    {% if formType == 'newPost' %}
+        <a href="/users/{{userInformation.id}}"><button type='button' class='btn btn-outline-primary'>Cancel</button></a>
+    {% endif %}
+
+    {% if formType == 'editPost' %}
+        <a href="/users/{{postInformation.author_id}}"><button type='button' class='btn btn-outline-primary'>Cancel</button></a>
+    {% endif %}
+    <button type='submit' class='btn btn-primary'>Submit</button>
+
+
+{% endblock submissionButton %}

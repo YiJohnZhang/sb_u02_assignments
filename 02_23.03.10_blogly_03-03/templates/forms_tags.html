@@ -1,0 +1,14 @@
+{% extends 'forms.html' %}
+
+{% block submissionButton %}
+    <a href="/tags"><button type='button' class='btn btn-outline-primary'>Cancel</button></a>
+
+    {% if formType == 'newTag' %}
+        <button type='submit' class='btn btn-primary'>Add</button>
+    {% endif %}
+
+    {% if formType == 'editTag' %}
+        <button type='submit' class='btn btn-primary'>Edit</button>
+    {% endif %}
+
+{% endblock submissionButton %}

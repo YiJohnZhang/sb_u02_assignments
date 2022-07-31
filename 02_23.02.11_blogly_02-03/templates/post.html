@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{postInformation.title}}</h1>
+<p>{{postInformation.content}}</p>
+<em>By <a href="/users/{{userInformation.id}}">{{userInformation.fullName}}</a>
+<div>
+    <form class="inline" action="/posts/{{postInformation.id}}/edit" method='POST'>
+        <button type='submit' class='btn btn-primary'>Edit</button>
+    </form>
+    <form class="inline" action="/posts/{{postInformation.id}}/delete" method="GET">
+        <button type='submit' class='btn btn-danger'>Delete</button>
+    </form>
+</div>
+{% endblock content %}

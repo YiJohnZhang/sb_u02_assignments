@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{selectedPet.name}}</h1>
+<p><em>{{selectedPet.species}}</em>, {{selectedPet.age}}</p>
+<img src="{{selectedPet.photo_url | default(url_for('static', filename='default_pic.jpg'), true)}}" alt="Picture of {{selectedPet.name}}." class="petImage petImage-large">
+
+{% endblock content %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST">
+    {{form.hidden_tag()}}
+    {% for formField in form if formField.widget.input_type != 'hidden' %}
+
+        <div>
+            
+            {{formField.label}}
+            
+            {{formField}}
+
+            {% for formError in formField.errors %}
+                {{formError}}
+            {% endfor %}
+
+        </div>
+
+    {% endfor %}
+
+    {% if formCancelOption %}
+        <button type='submit' formaction="/users/{{userID}}">Cancel</button>
+    {% endif %}
+    <button type='submit'>Submit</button>
+</form>
+{% endblock content %}

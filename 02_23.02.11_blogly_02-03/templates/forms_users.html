@@ -1,0 +1,8 @@
+{% extends 'forms.html' %}
+
+{% block submissionButton %}
+    {% if formCancelOption %}
+        <button type='submit' class='btn btn-outline-primary' formaction="/users/{{userID}}">Cancel</button>
+    {% endif %}
+    <button type='submit' class='btn btn-primary'>Submit</button>
+{% endblock submissionButton %}

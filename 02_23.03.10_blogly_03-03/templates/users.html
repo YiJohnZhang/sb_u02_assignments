@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<ul>
+{% for user in usersInformation %}
+    <li><a href="/users/{{user.id}}">{{user.getFullName_lastFirst()}}</a></li>
+{% endfor %}
+</ul>
+<form action='/users/new' methods='POST'>
+    <button class="btn btn-primary">Add User</button>
+</form>
+{% endblock content %}
