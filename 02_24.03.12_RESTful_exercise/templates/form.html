@@ -1,0 +1,26 @@
+{% extends "index.html" %}
+
+{% block form %}
+<form id='newCupcake-form'>
+
+    {{form.hidden_tag()}}
+
+    {% for formField in form if formField.widget.input_type != 'hidden' %}
+
+    <p>
+            
+        {{formField.label}}
+        {{formField}}
+
+        {% for formError in formField.errors %}
+            {{formError}}
+        {% endfor %}
+
+    </p>
+
+    {% endfor %}
+
+    <button id='newCupcake-form-submit' type='submit' class="btn btn-success">Submit</button>
+
+</form>
+{% endblock %}
