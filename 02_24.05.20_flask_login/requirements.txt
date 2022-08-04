@@ -1,0 +1,8 @@
+flask
+flask-sqlalchemy
+flask-wtf
+ipython
+psycopg2-binary
+sqlalchemy
+Flask-DebugToolbar==0.13.1
+flask-bcrypt
