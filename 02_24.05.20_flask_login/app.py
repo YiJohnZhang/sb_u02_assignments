@@ -52,25 +52,18 @@ def indexView():
 def registerView():
 
     preventAuthenticatedPublicViews();
-    print('14w53q5q')
 
     registerForm = RegisterForm();
 
-    print('$$$$$$$$$$$$$$')
-
     if registerForm.validate_on_submit():
 
-        print('$asfdasfdaarsaaa$$$$$$$')
-        userObject = User.createUser(request.form)
-        print('asdfasdfsadffsffff$$$$$$$$')
-        print(f'asf: {userObject}')
+        # stopes here
+        userObject = User.createUser(request.form);
 
         if userObject:
-            session['username'] = userObject['username'];
-            print('44$$$$$$$$$$$$$$')
+            session['username'] = userObject.username;
             return redirect(url_for('userView', username=session['username']));
         
-        print('afsdasdf')
         flash('Username already taken.', category='error')
 
     return render_template('forms.html',
@@ -85,7 +78,7 @@ def loginView():
 
     if loginForm.validate_on_submit():
 
-        credentialsMatch = User.authenticateUserLogin(request.form.username, request.form.password);
+        credentialsMatch = User.authenticateUserLogin(request.form['username'], request.form['password']);
 
         if credentialsMatch:
             session['username'] = credentialsMatch.username;
