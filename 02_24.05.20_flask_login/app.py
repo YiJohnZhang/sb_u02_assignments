@@ -1,12 +1,10 @@
 from flask import Flask, session, render_template, redirect, url_for, request, abort, flash;
 from models import db, connectDB, User, Feedback;
 from forms import LoginForm, RegisterForm, FeedbackForm;
-from flask_bcrypt import Bcrypt;
 from secrets import API_SECRET_KEY;
 from flask_debugtoolbar import DebugToolbarExtension;
 
 app = Flask(__name__);
-bcrypt = Bcrypt();
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///sb_24.05.20'; 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False;

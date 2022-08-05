@@ -1,8 +1,9 @@
 # from app import bcrypt;   # circular import b/c app.py imports models.py
 from flask_sqlalchemy import SQLAlchemy;
-import bcrypt;
+from flask_bcrypt import Bcrypt;
 
 db = SQLAlchemy();
+bcrypt = Bcrypt();
 
 def connectDB(app):
     db.app = app;
@@ -13,7 +14,7 @@ class User(db.Model):
     __tablename__ = 'users';
 
     username = db.Column(db.String(20), unique=True, primary_key=True);
-    password = db.Column(db.LargeBinary, nullable=False);
+    password = db.Column(db.Text, nullable=False);
     email = db.Column(db.String(50), unique=True, nullable=False);
     first_name = db.Column(db.String(30), nullable=False);
     last_name = db.Column(db.String(30), nullable=False);
@@ -36,13 +37,10 @@ class User(db.Model):
     def hashString(cls, stringToHash):
         '''Return utf-8 decoded hash of a passed string to hash, such as a password.'''
         
-        # hashedString = bcrypt.generate_password_hash(stringToHash);
-        byte_stringToHash = str.encode(stringToHash);
-        hashedPassword = bcrypt.hashpw(b'{byte_stringToHash}', bcrypt.gensalt());
-        return hashedPassword;
-        # utf8_hashedString = hashedString.decode('utf-8');
+        hashedString = bcrypt.generate_password_hash(stringToHash);
+        utf8_hashedString = hashedString.decode('utf-8');
 
-        # return utf8_hashedString;
+        return utf8_hashedString;
     
     @classmethod
     def authorizeUserOperation(cls, userPath, username):
@@ -64,7 +62,7 @@ class User(db.Model):
             print('------------')
 
             userObject = cls(**data);
-            userObject.password = cls.hashString(data['password'])
+            userObject.password= cls.hashString(data['password'])
             print(userObject)
 
             db.session.add(userObject);
@@ -88,12 +86,7 @@ class User(db.Model):
 
         userObject = cls.searchUserByUsername(username);
 
-        # unicode must be encoded before checking
-        
-
-        # if userObject and bcrypt.check_password_hash(userObject.password, password):
-
-        if userObject and bcrypt.checkpw(str.encode(password), userObject.password.decode()):
+        if userObject and bcrypt.check_password_hash(userObject.password, password):
             return userObject;
         else:
             return False;   # not found or password/user combination incorrect
