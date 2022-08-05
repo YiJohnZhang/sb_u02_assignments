@@ -25,12 +25,13 @@ db.create_all();
 def checkSession():
     return 'username' in session;
 
-def redirectAuthenticatedPublicViews():
-    return redirect(url_for('userView', username=session['username']));
+# def redirectAuthenticatedPublicViews():
+#     # apparently view focus is lost
+#     return redirect(url_for('userView', username=session['username']));
 
-def preventAuthenticatedPublicViews():
-    if checkSession():
-        redirectAuthenticatedPublicViews();
+# def preventAuthenticatedPublicViews():
+#     if checkSession():
+#         redirectAuthenticatedPublicViews();
 
 # Error Views
 @app.errorhandler(401)
@@ -49,7 +50,8 @@ def indexView():
 @app.route('/register', methods=['GET', 'POST'])
 def registerView():
 
-    preventAuthenticatedPublicViews();
+    if checkSession():
+        return redirect(url_for('userView', username=session['username']));
 
     registerForm = RegisterForm();
 
@@ -70,7 +72,8 @@ def registerView():
 @app.route('/login', methods=['GET', 'POST'])
 def loginView():
 
-    preventAuthenticatedPublicViews();
+    if checkSession():
+        return redirect(url_for('userView', username=session['username']));
     
     loginForm = LoginForm();
 
@@ -94,22 +97,34 @@ def logoutView():
     if checkSession():
         session.pop('username');
         return redirect(url_for('indexView'));
-    
-    flash('You must be logged in to do that.')
-    return abort(401);
+    else:   # because flask insists there is an "IndentationError: unexpected indent"
+        flash('You must be logged in to do that!', category='error');
+        return redirect(url_for('indexView'));
 
 @app.route('/users/<username>')
 def userView(username):
+
+    if not checkSession():
+        flash('You must be logged in to do that!', category='error');
+        return redirect(url_for('indexView'));
 
     return 'asfd';
 
 @app.route('/users/<username>/delete', methods=['POST'])
 def deleteUserView(username):
+
+    if not checkSession():
+        flash('You must be logged in to do that!', category='error');
+        return redirect(url_for('indexView'));
     return;
 
 @app.route('/users/<username>/feedback/add', methods=['GET', 'POST'])
 def addFeedbackView(username):
     
+    if not checkSession():
+        flash('You must be logged in to do that!', category='error');
+        return redirect(url_for('indexView'));
+
     feedbackForm = FeedbackForm();
     
     return render_template('forms.html',
@@ -117,10 +132,19 @@ def addFeedbackView(username):
 
 @app.route('/feedback/<int:feedbackID>/update', methods=['GET', 'POST'])
 def updateFeedbackView(feedbackID):
+
+    if not checkSession():
+        flash('You must be logged in to do that!', category='error');
+        return redirect(url_for('indexView'));
+
     return;
 
 @app.route('/feedback/<int:feedbackID>/delete', methods=['POST'])
 def deleteFeedbackView(feedbacKID):
+
+    if not checkSession():
+        flash('You must be logged in to do that!', category='error');
+        return redirect(url_for('indexView'));
 
     username = session['username'];
 
