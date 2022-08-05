@@ -9,7 +9,7 @@ def connectDB(app):
 
 class User(db.Model):
 
-    __tablename__ = 'User';
+    __tablename__ = 'users';
 
     username = db.Column(db.String(20), unique=True, primary_key=True);
     password = db.Column(db.Text, nullable=False);
@@ -56,7 +56,12 @@ class User(db.Model):
 
         if not cls.searchUserByUsername(requestData.get('username')):
             
+            print('------------')
+            
             userObject = cls(**data);
+            userObject['password']= cls.hashString(data['password'])
+            print(userObject)
+
             db.session.add(userObject);
             db.session.commit();
 
@@ -68,7 +73,7 @@ class User(db.Model):
     @classmethod
     def searchUserByUsername(cls, username):
         '''Search the database by username.'''
-        return cls.query.filter(username=username).get_or_404();
+        return cls.query.filter(cls.username==username).first_or_404();
     
     @classmethod
     def authenticateUserLogin(cls, username, password):
@@ -99,7 +104,7 @@ class Feedback(db.Model):
     content = db.Column(db.Text, nullable=False);
 
     username = db.Column(db.ForeignKey(User.username, ondelete='CASCADE', onupdate='CASCADE'));
-    userReference = db.relationship('User', backref=db.backref('feedbackReference', passive_delete=True));
+    userReference = db.relationship('User', backref=db.backref('feedbackReference', passive_deletes=True));
 
     @classmethod    # could potentially create a prototype because the function is similar
     def cleanRequestData(cls, requestData):

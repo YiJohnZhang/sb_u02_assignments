@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+{% block content %}
 <form method="POST">
 
     {{form.hidden_tag()}}
@@ -19,9 +20,9 @@
     
     {% endfor %}
 
-    {% if formPurpose='register' %}
+    {% if formPurpose=='register' %}
         <button type="submit" class="btn btn-success">Register</button>
-    {% elif formPurpose='login' %}
+    {% elif formPurpose=='login' %}
         <button type="submit" class="btn btn-success">Login</button>
     {% else %}
         <a class="btn btn-outline-primary" href="/users/{{username}}">Cancel</a>  
@@ -29,3 +30,4 @@
     {% endif %}
 
 </form>
+{% endblock content %}

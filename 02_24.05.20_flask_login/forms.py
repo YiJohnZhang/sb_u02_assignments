@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm;
-from wtforms import StringField, PasswordField, EmailField, TextAreaField;
+from wtforms import StringField, PasswordField, TextAreaField;
 from wtforms.validators import InputRequired, Length;
 
 class LoginForm(FlaskForm):
@@ -9,7 +9,7 @@ class LoginForm(FlaskForm):
 
 class RegisterForm(LoginForm):
     
-    email = EmailField(label='Email', validators=[InputRequired(), Length(min=1, max=50)]);
+    email = StringField(label='Email', validators=[InputRequired(), Length(min=1, max=50)]);
     first_name = StringField(label='First Name', validators=[InputRequired(), Length(max=30)]);
     last_name = StringField(label='Last Name', validators=[InputRequired(), Length(max=30)]);
 

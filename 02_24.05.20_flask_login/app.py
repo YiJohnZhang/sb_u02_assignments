@@ -2,7 +2,8 @@ from flask import Flask, session, render_template, redirect, url_for, request, a
 from models import db, connectDB, User, Feedback;
 from forms import LoginForm, RegisterForm, FeedbackForm;
 from flask_bcrypt import Bcrypt;
-from secret import API_SECRET_KEY;
+from secrets import API_SECRET_KEY;
+from flask_debugtoolbar import DebugToolbarExtension;
 
 app = Flask(__name__);
 bcrypt = Bcrypt();
@@ -35,12 +36,12 @@ def preventAuthenticatedPublicViews():
 
 # Error Views
 @app.errorhandler(401)
-def unauthorizedView_401():
-    return '401: Unauthorized.';
+def unauthorizedView_401(error):
+    return ('401: Unauthorized.', 401);
 
 @app.errorhandler(404)
-def notFoundView_404():
-    return '404: Not Found';
+def notFoundView_404(error):
+    return ('404: Not Found', 404);
 
 # Public Views
 @app.route('/')
@@ -51,17 +52,25 @@ def indexView():
 def registerView():
 
     preventAuthenticatedPublicViews();
+    print('14w53q5q')
 
     registerForm = RegisterForm();
 
+    print('$$$$$$$$$$$$$$')
+
     if registerForm.validate_on_submit():
 
-        userObject = User.cleanRequestData(request.form)
+        print('$asfdasfdaarsaaa$$$$$$$')
+        userObject = User.createUser(request.form)
+        print('asdfasdfsadffsffff$$$$$$$$')
+        print(f'asf: {userObject}')
 
         if userObject:
-            session['username'] = userObject.username;
+            session['username'] = userObject['username'];
+            print('44$$$$$$$$$$$$$$')
             return redirect(url_for('userView', username=session['username']));
-
+        
+        print('afsdasdf')
         flash('Username already taken.', category='error')
 
     return render_template('forms.html',
@@ -101,7 +110,7 @@ def logoutView():
 @app.route('/users/<username>')
 def userView(username):
 
-    return;
+    return 'asfd';
 
 @app.route('/users/<username>/delete', methods=['POST'])
 def deleteUserView(username):
