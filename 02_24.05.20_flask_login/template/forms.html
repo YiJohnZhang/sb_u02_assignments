@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+<form method="POST">
+
+    {{form.hidden_tag()}}
+
+    {% for formField in form if formField.widget.input_type != 'hidden' %}
+
+        {# if formField.description is null, addForm #}
+                
+        {{formField.label}}
+        {{formField}}
+
+        {% for formError in formField.errors %}
+
+            {{formError}}
+
+        {% endfor %}
+    
+    {% endfor %}
+
+    {% if formPurpose='register' %}
+        <button type="submit" class="btn btn-success">Register</button>
+    {% elif formPurpose='login' %}
+        <button type="submit" class="btn btn-success">Login</button>
+    {% else %}
+        <a class="btn btn-outline-primary" href="/users/{{username}}">Cancel</a>  
+        <button type="submit" class="btn btn-success">Submit Feedback</button>
+    {% endif %}
+
+</form>

@@ -1,8 +1,7 @@
+# from app import bcrypt;   # circular import b/c app.py imports models.py
 from flask_sqlalchemy import SQLAlchemy;
-from flask_bcrypt import Bcrypt;
 
 db = SQLAlchemy();
-bcrypt = Bcrypt();
 
 def connectDB(app):
     db.app = app;
@@ -57,7 +56,7 @@ class User(db.Model):
 
         if not cls.searchUserByUsername(requestData.get('username')):
             
-            userObject = cls(**requestData);
+            userObject = cls(**data);
             db.session.add(userObject);
             db.session.commit();
 
@@ -99,8 +98,8 @@ class Feedback(db.Model):
     title = db.Column(db.String(100), nullable=False);
     content = db.Column(db.Text, nullable=False);
 
-    username = db.Column(db.ForeginKey(User.username), ondelete='CASCADE', onupdate='CASCADE');
-    userReference = db.Relationship('User', backref=db.backref('feedbackReference', passive_delete=True));
+    username = db.Column(db.ForeignKey(User.username, ondelete='CASCADE', onupdate='CASCADE'));
+    userReference = db.relationship('User', backref=db.backref('feedbackReference', passive_delete=True));
 
     @classmethod    # could potentially create a prototype because the function is similar
     def cleanRequestData(cls, requestData):
