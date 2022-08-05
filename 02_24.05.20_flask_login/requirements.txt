@@ -5,4 +5,4 @@ ipython
 psycopg2-binary
 sqlalchemy
 Flask-DebugToolbar==0.13.1
-flask-bcrypt
+Flask-Bcrypt==0.7.1

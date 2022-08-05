@@ -1,0 +1,36 @@
+body{
+    padding:15px;
+}
+
+.inline {
+    display: inline;
+}
+.block{
+    display:block;
+}
+.inline-block{
+    display: inline-block;
+}
+
+.flashMessage-container{
+    list-style:none;
+}
+
+label{
+    vertical-align: top;
+    width:5%;
+}
+    input, select{
+        width:10%;
+    }
+
+img{
+    height:300px;
+    padding-right:16px;
+}
+
+a{}
+    .petIsTrue{
+        color:green;
+        font-weight: bold;
+    }
