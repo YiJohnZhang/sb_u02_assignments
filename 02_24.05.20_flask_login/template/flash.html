@@ -1,0 +1,11 @@
+<div>
+    {% with flashMessages = get_flashed_messages() %}
+        {% if flashMessages %}
+            <ul class="flashMessage-container">
+                {% for flashMessage in flashMessages %}
+                    <li>{{flashMessage}}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</div>
