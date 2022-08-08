@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>24.05.20 Hashing & Log In</title>
     <link rel="stylesheet" href="{{url_for('static', filename='bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+        <!-- me thinks that this kept referring to another project's `style.css` until I changed it to `style.css`. Funny thing is that I cleared cookies and restarted terminal to no avail until finally change the name to `styles.css`-->
 </head>
 <body>
+
     {% include "navigation.html" %}
     {% include "flash.html" %}
     {% block content %}{% endblock content %}

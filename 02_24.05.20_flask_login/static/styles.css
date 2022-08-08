@@ -30,7 +30,10 @@ img{
 }
 
 a{}
-    .petIsTrue{
-        color:green;
-        font-weight: bold;
+
+#nav_table{
+    width:100%;
+}   
+    #nav_table tr{
+        width:20%;
     }

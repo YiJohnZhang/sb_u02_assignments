@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p>Hello, {{username}}!</p>
+
+<p>All of your feedback:</p>
+<ul>
+    {% for feedback in feedbackList %}
+        <li class="inline">{{feedback}}
+            <a class="btn btn-outline-secondary" href="/feedback/{{feedback.id}}/update">insert pencil icon</a>
+            <form action="/feedback/{{feedback.id}}/delete" method="POST"><button class="btn btn-outline-danger">insert bin icon</button></form>
+        </li>
+    {% endfor %}
+</ul>
+
+<a href="/users/{{username}}/feedback/add">Create Feedback!</a>
+
+{% endblock content %}

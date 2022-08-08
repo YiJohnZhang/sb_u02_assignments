@@ -1,12 +1,33 @@
 <div>
-    <table>
-        <!-- <tr></tr>
-        {% if True%}
-            <tr></tr>
-            <tr></tr>
-        {% else %}
-            <tr></tr>
-            <tr></tr>
-        {% endif %} -->
+    <table id="nav_table">
+        <tr>
+            <td>
+                <a href="/">Home</a>
+            </td>
+            <td>
+
+            </td>
+            {% if username %}
+                <td>
+                    <a href="/users/{{username}}">{{username}} Profile</a>
+                </td>
+                <td>
+                    <a href="/users/{{username}}/feeddback/add">Add Feedback</a>
+                <td>
+                    <a href="/logout">Logout</a>
+                </td>
+                </td>
+            {% else %}
+                <td>
+
+                </td>
+                <td>
+                    <a href="/register">Register</a>
+                </td>
+                <td>
+                    <a href="/login">Login</a>
+                </td>
+            {% endif %}
+        </tr>
     </table>
 </div>

@@ -56,10 +56,7 @@ class User(db.Model):
 
         data = cls.cleanRequestData(requestData);
 
-        print('!!!!!!')
         if not cls.searchUserByUsername(data['username']):
-            
-            print('------------')
 
             userObject = cls(**data);
             userObject.password= cls.hashString(data['password'])
@@ -71,7 +68,6 @@ class User(db.Model):
             return userObject;
 
         else:
-            print('test');
             return None;    # error that the user already exists
         
     @classmethod
@@ -111,6 +107,15 @@ class Feedback(db.Model):
     username = db.Column(db.ForeignKey(User.username, ondelete='CASCADE', onupdate='CASCADE'));
     userReference = db.relationship('User', backref=db.backref('feedbackReference', passive_deletes=True));
 
+    def __repr__(self):
+        '''Self-representation for a feedback object.'''
+        if len(self.title) > 25:
+            displayedTitle = f'{self.title[0:22]}...';
+        else:
+            displayedTitle = self.title;
+
+        return f'<Feedback {self.id}: {displayedTitle}>';
+
     @classmethod    # could potentially create a prototype because the function is similar
     def cleanRequestData(cls, requestData):
         '''Cleans request data. Such as removing the `csrf_token` so that it doesn't mess with kwarg-ing a Model creation.'''
@@ -123,14 +128,27 @@ class Feedback(db.Model):
         return mutableRequestData;
 
     @classmethod
-    def createFeedback(cls, requestData):
+    def createFeedback(cls, requestData, username):
         '''Create a new Feedback object.'''
+
+        data = Feedback.cleanRequestData(requestData);
+        data['username'] = str(username);
+
+        feedbackObject = cls(**data);
+        db.session.add(feedbackObject);     # error here, apparently User.query.get('asdf') == feedbackObject.username, where username passed is 'asdf' returns false
+        db.session.commit();
+
         return;
 
     @classmethod
     def searchFeedbackByID(cls, feedbacKID):
         '''Searches Feedback by the ID (primary key).'''
         return cls.query.get_or_404(feedbacKID);
+
+    @classmethod
+    def listFeedbackByUserID(cls, username):
+        '''Searches Feedback by the User ID (parent foreign key).'''
+        return cls.query.filter(cls.username == username).all();
 
     @classmethod
     def authorizeFeedbackOperation(cls, feedbackID, username):

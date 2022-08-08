@@ -25,6 +25,9 @@ db.create_all();
 def checkSession():
     return 'username' in session;
 
+def checkCredentials(username):
+    return username == session['username'];
+
 # def redirectAuthenticatedPublicViews():
 #     # apparently view focus is lost
 #     return redirect(url_for('userView', username=session['username']));
@@ -50,14 +53,13 @@ def indexView():
 @app.route('/register', methods=['GET', 'POST'])
 def registerView():
 
-    if checkSession():
+    if checkSession():      # note: need to figure out how to handle all this logic with one callback
         return redirect(url_for('userView', username=session['username']));
 
     registerForm = RegisterForm();
 
     if registerForm.validate_on_submit():
 
-        # stopes here
         userObject = User.createUser(request.form);
 
         if userObject:
@@ -72,7 +74,7 @@ def registerView():
 @app.route('/login', methods=['GET', 'POST'])
 def loginView():
 
-    if checkSession():
+    if checkSession():      # note: need to figure out how to handle all this logic with one callback
         return redirect(url_for('userView', username=session['username']));
     
     loginForm = LoginForm();
@@ -97,6 +99,7 @@ def logoutView():
     if checkSession():
         session.pop('username');
         return redirect(url_for('indexView'));
+
     else:   # because flask insists there is an "IndentationError: unexpected indent"
         flash('You must be logged in to do that!', category='error');
         return redirect(url_for('indexView'));
@@ -104,28 +107,52 @@ def logoutView():
 @app.route('/users/<username>')
 def userView(username):
 
-    if not checkSession():
+    if not checkSession():      # note: need to figure out how to handle all this logic with one callback
         flash('You must be logged in to do that!', category='error');
         return redirect(url_for('indexView'));
+    
+    if not checkCredentials(username):  # need to figure out how to handle all this lgoic with one callback, too
+        abort(401);
 
-    return 'asfd';
+    feedbackList = Feedback.listFeedbackByUserID(username);
+
+    return render_template('user.html', username=username, feedbackList=feedbackList);
 
 @app.route('/users/<username>/delete', methods=['POST'])
 def deleteUserView(username):
 
-    if not checkSession():
+    if not checkSession():      # note: need to figure out how to handle all this logic with one callback
         flash('You must be logged in to do that!', category='error');
         return redirect(url_for('indexView'));
-    return;
+       
+    if not checkCredentials(username):  # need to figure out how to handle all this lgoic with one callback, too
+        abort(401);
+
+    session.pop('username');    # logout
+    flash(f'{username} has been successfully deleted!');
+        
+    return redirect(url_for('indexView'));
+
 
 @app.route('/users/<username>/feedback/add', methods=['GET', 'POST'])
 def addFeedbackView(username):
     
-    if not checkSession():
+    if not checkSession():      # note: need to figure out how to handle all this logic with one callback
         flash('You must be logged in to do that!', category='error');
         return redirect(url_for('indexView'));
-
+       
+    if not checkCredentials(username):  # need to figure out how to handle all this lgoic with one callback, too
+        abort(401);
+    
     feedbackForm = FeedbackForm();
+
+    if feedbackForm.validate_on_submit():
+
+        Feedback.createFeedback(request.form, session['username']);
+        flash('Thank you for your feedback!', category='success');
+        
+        return redirect(url_for('userView', username=username));
+
     
     return render_template('forms.html',
         form=feedbackForm, formPurpose='feedback', username=username);
@@ -133,21 +160,51 @@ def addFeedbackView(username):
 @app.route('/feedback/<int:feedbackID>/update', methods=['GET', 'POST'])
 def updateFeedbackView(feedbackID):
 
-    if not checkSession():
+    if not checkSession():      # note: need to figure out how to handle all this logic with one callback
         flash('You must be logged in to do that!', category='error');
         return redirect(url_for('indexView'));
 
-    return;
+    selectedFeedback = Feedback.searchFeedbackByID(feedbackID);
+
+    if not selectedFeedback:
+        abort(404);
+
+    expectedUsername = selectedFeedback.username;
+
+    if not checkCredentials(expectedUsername):  # need to figure out how to handle all this lgoic with one callback, too
+        abort(401);
+
+    #inject feedback data selectedFeedback
+    feedbackForm = FeedbackForm(obj=selectedFeedback);
+
+    if feedbackForm.validate_on_submit():
+        selectedFeedback.updateFeedback(request.form);
+        flash(f'Updated {selectedFeedback} successfully!', category='success');
+        return redirect(url_for('userView', username=selectedFeedback.username));
+
+    return render_template('forms.html', form = feedbackForm);
 
 @app.route('/feedback/<int:feedbackID>/delete', methods=['POST'])
 def deleteFeedbackView(feedbacKID):
 
-    if not checkSession():
+    if not checkSession():      # note: need to figure out how to handle all this logic with one callback
         flash('You must be logged in to do that!', category='error');
         return redirect(url_for('indexView'));
+       
+    selectedFeedback = Feedback.searchFeedbackByID(feedbacKID);
 
-    username = session['username'];
+    if not selectedFeedback:
+        abort(404);
 
+    if not checkCredentials(username):  # need to figure out how to handle all this lgoic with one callback, too
+        abort(401);
+    
+    expectedUsername = selectedFeedback.username;
 
+    if not checkCredentials(expectedUsername):  # need to figure out how to handle all this lgoic with one callback, too
+        abort(401);
 
-    return redirect(url_for('userView', username=username));
+    selectedFeedback.deleteFeedback();
+    flash(f'Deleted {selectedFeedback} successfully!', category='success');
+
+    return redirect(url_for('userView', username=selectedFeedback.username));
