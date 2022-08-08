@@ -1,18 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
-<p>Hello, {{username}}!</p>
+<p>Hello, {{session['username']}}!</p>
 
 <p>All of your feedback:</p>
-<ul>
+<table>
     {% for feedback in feedbackList %}
-        <li class="inline">{{feedback}}
-            <a class="btn btn-outline-secondary" href="/feedback/{{feedback.id}}/update">insert pencil icon</a>
-            <form action="/feedback/{{feedback.id}}/delete" method="POST"><button class="btn btn-outline-danger">insert bin icon</button></form>
-        </li>
+        <tr>
+            <td>{{feedback}}</td>
+            <td>
+                <a class="inline btn btn-outline-secondary" href="/feedback/{{feedback.id}}/update"><i class="blue fa-solid fa-pen-to-square"></i></a>
+            </td>
+            <td><form class="inline" action="/feedback/{{feedback.id}}/delete" method="POST">
+                <button class="inline btn btn-outline-danger"><i class="red fa-solid fa-trash-can"></i></button>
+            </form></td>
+        </tr>
     {% endfor %}
-</ul>
+</table>
 
-<a href="/users/{{username}}/feedback/add">Create Feedback!</a>
+<form class="inline" action="/users/{{username}}/delete" method="POST">
+    <a class="btn btn-success" href="/users/{{username}}/feedback/add">Add Feedback</a>
+    <button class="btn btn-danger">Delete User</button>
+</form>
 
 {% endblock content %}

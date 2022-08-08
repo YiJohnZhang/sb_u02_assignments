@@ -10,6 +10,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///sb_24.05.20';
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False;
 app.config['SQLALCHEMY_ECHO'] = False;
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False;
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = -1;
+
 # Sessions
 app.config['SECRET_KEY'] = API_SECRET_KEY;
 # DebugToolbar
@@ -19,7 +21,6 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False;
 
 connectDB(app);
 db.create_all();
-
 
 # Handle Public View Routing
 def checkSession():
@@ -116,7 +117,7 @@ def userView(username):
 
     feedbackList = Feedback.listFeedbackByUserID(username);
 
-    return render_template('user.html', username=username, feedbackList=feedbackList);
+    return render_template('user.html', feedbackList=feedbackList);
 
 @app.route('/users/<username>/delete', methods=['POST'])
 def deleteUserView(username):
@@ -169,7 +170,7 @@ def updateFeedbackView(feedbackID):
     if not selectedFeedback:
         abort(404);
 
-    expectedUsername = selectedFeedback.username;
+    expectedUsername = selectedFeedback.author;
 
     if not checkCredentials(expectedUsername):  # need to figure out how to handle all this lgoic with one callback, too
         abort(401);
@@ -180,26 +181,26 @@ def updateFeedbackView(feedbackID):
     if feedbackForm.validate_on_submit():
         selectedFeedback.updateFeedback(request.form);
         flash(f'Updated {selectedFeedback} successfully!', category='success');
-        return redirect(url_for('userView', username=selectedFeedback.username));
+        return redirect(url_for('userView', username=selectedFeedback.author));
 
     return render_template('forms.html', form = feedbackForm);
 
 @app.route('/feedback/<int:feedbackID>/delete', methods=['POST'])
-def deleteFeedbackView(feedbacKID):
+def deleteFeedbackView(feedbackID):
 
     if not checkSession():      # note: need to figure out how to handle all this logic with one callback
         flash('You must be logged in to do that!', category='error');
         return redirect(url_for('indexView'));
        
-    selectedFeedback = Feedback.searchFeedbackByID(feedbacKID);
+    selectedFeedback = Feedback.searchFeedbackByID(feedbackID);
 
     if not selectedFeedback:
         abort(404);
 
-    if not checkCredentials(username):  # need to figure out how to handle all this lgoic with one callback, too
+    if not checkCredentials(selectedFeedback.author):  # need to figure out how to handle all this lgoic with one callback, too
         abort(401);
     
-    expectedUsername = selectedFeedback.username;
+    expectedUsername = selectedFeedback.author;
 
     if not checkCredentials(expectedUsername):  # need to figure out how to handle all this lgoic with one callback, too
         abort(401);
@@ -207,4 +208,4 @@ def deleteFeedbackView(feedbacKID):
     selectedFeedback.deleteFeedback();
     flash(f'Deleted {selectedFeedback} successfully!', category='success');
 
-    return redirect(url_for('userView', username=selectedFeedback.username));
+    return redirect(url_for('userView', username=selectedFeedback.author));

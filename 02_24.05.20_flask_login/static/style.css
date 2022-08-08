@@ -16,6 +16,13 @@ body{
     list-style:none;
 }
 
+.red{
+    color:#F00;
+}
+.blue{
+    color:#00F;
+}
+
 label{
     vertical-align: top;
     width:5%;

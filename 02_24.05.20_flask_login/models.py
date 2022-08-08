@@ -104,8 +104,8 @@ class Feedback(db.Model):
     title = db.Column(db.String(100), nullable=False);
     content = db.Column(db.Text, nullable=False);
 
-    username = db.Column(db.ForeignKey(User.username, ondelete='CASCADE', onupdate='CASCADE'));
-    userReference = db.relationship('User', backref=db.backref('feedbackReference', passive_deletes=True));
+    author = db.Column(db.String(20), db.ForeignKey(User.username, ondelete='CASCADE', onupdate='CASCADE'));
+    authorReference = db.relationship('User', backref=db.backref('feedbackReference', passive_deletes=True));
 
     def __repr__(self):
         '''Self-representation for a feedback object.'''
@@ -128,13 +128,14 @@ class Feedback(db.Model):
         return mutableRequestData;
 
     @classmethod
-    def createFeedback(cls, requestData, username):
+    def createFeedback(cls, requestData, author):
         '''Create a new Feedback object.'''
 
         data = Feedback.cleanRequestData(requestData);
-        data['username'] = str(username);
+        data['author'] = str(author);
 
         feedbackObject = cls(**data);
+        User.query.get(feedbackObject.author);
         db.session.add(feedbackObject);     # error here, apparently User.query.get('asdf') == feedbackObject.username, where username passed is 'asdf' returns false
         db.session.commit();
 
@@ -146,15 +147,15 @@ class Feedback(db.Model):
         return cls.query.get_or_404(feedbacKID);
 
     @classmethod
-    def listFeedbackByUserID(cls, username):
+    def listFeedbackByUserID(cls, author):
         '''Searches Feedback by the User ID (parent foreign key).'''
-        return cls.query.filter(cls.username == username).all();
+        return cls.query.filter(cls.author == author).all();
 
     @classmethod
-    def authorizeFeedbackOperation(cls, feedbackID, username):
+    def authorizeFeedbackOperation(cls, feedbackID, author):
         '''Authorize a Feedback manipulation operation by checking if the attempting user is the original author.'''
 
-        if cls.searchFeedbackByID(feedbackID).username == username:     # Reminder: pass username = userObject.username from sessions.
+        if cls.searchFeedbackByID(feedbackID).author == author:     # Reminder: pass username = userObject.username from sessions.
             return True;
         else:
             return False;
