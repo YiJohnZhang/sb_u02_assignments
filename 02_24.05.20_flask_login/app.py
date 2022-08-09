@@ -10,7 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///sb_24.05.20';
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False;
 app.config['SQLALCHEMY_ECHO'] = False;
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False;
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = -1;
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = -1;   # prevent cache glitches so that file modifications are reflected without flushing memory, chrome and/or site
 
 # Sessions
 app.config['SECRET_KEY'] = API_SECRET_KEY;
@@ -28,6 +28,9 @@ def checkSession():
 
 def checkCredentials(username):
     return username == session['username'];
+
+def checkAdmin():
+    return session['username'] == 'admin';
 
 # def redirectAuthenticatedPublicViews():
 #     # apparently view focus is lost
@@ -209,3 +212,32 @@ def deleteFeedbackView(feedbackID):
     flash(f'Deleted {selectedFeedback} successfully!', category='success');
 
     return redirect(url_for('userView', username=selectedFeedback.author));
+
+@app.route('/admin/manage')
+def adminView():
+
+    if not checkAdmin():
+        return redirect(url_for('indexView'));
+    
+    userList = User.admin_returnAllUsersButAdmins();
+    feedbackList = Feedback.admin_returnAllFeedback();
+
+    return render_template('admin.html',
+        userList = userList, feedbackList = feedbackList);
+
+
+@app.route('/admin/feedback/<int:feedbackID>/delete', methods=['POST'])
+def adminDeleteFeedbackView(feedbackID):
+
+    # maybe do something with feedback as "is_censored" to prevent contents from displaying so that there is an opportunity for view.
+
+    Feedback.admin_deleteFeedback(feedbackID);
+    
+    return redirect(url_for('adminView'));
+
+@app.route('/admin/<username>/ban', methods=['POST'])
+def adminBanUserView(username):
+
+    User.admin_banAndDeleteUser(username);
+
+    return redirect(url_for('adminView'));

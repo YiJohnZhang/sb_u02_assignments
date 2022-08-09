@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p>All feedback:</p>
+<table>
+    {% for feedback in feedbackList %}
+        <tr>
+            <td>{{feedback.admin_FeedbackVerbose}}</td>
+            <td>
+                <a class="btn btn-outline-secondary" href="/feedback/{{feedback.id}}/update"><i class="blue fa-solid fa-pen-to-square"></i></a>
+            </td>
+            <td><form class="inline" action="/admin/feedback/{{feedback.id}}/delete" method="POST">
+                <button class="inline btn btn-outline-danger">DELETE POST: <i class="red fa-solid fa-trash-can"></i></button>
+            </form></td>
+        </tr>
+    {% endfor %}
+</table>
+
+<p>All users:</p>
+<table>
+    {% for user in userList %}
+        <tr>
+            <td>{{user.admin_UserVerbose}}</td>
+            <td><form class="inline" action="/admin/{{user.username}}/ban" method="POST">
+                <button class="inline btn btn-outline-danger">BAN & DELETE USER: <i class="red fa-solid fa-trash-can"></i></button>
+            </form></td>
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock content %}

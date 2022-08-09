@@ -18,6 +18,7 @@ class User(db.Model):
     email = db.Column(db.String(50), unique=True, nullable=False);
     first_name = db.Column(db.String(30), nullable=False);
     last_name = db.Column(db.String(30), nullable=False);
+    is_admin = db.Column(db.Boolean, nullable=True, default=False);     # extra protection for nullable=True to create None types.
 
     def __repr__(self):
         '''Self-representation for a user object.'''
@@ -95,6 +96,41 @@ class User(db.Model):
             return;
         else:
             return False;    # use to trigger an error
+
+    # Admin Methods
+    @property
+    def admin_UserVerbose(self):
+        '''User object representation visible to admins.'''
+        return f'User {self.username}: {self.last_name}, {self.first_name}';
+
+    @classmethod
+    def admin_returnAllUsersButAdmins(cls):
+        '''Admin Feedback Search.'''
+        return cls.query.filter(User.is_admin != True).all();  # prevents admins from banning admins 
+    
+
+    # @classmethod
+    # def searchUserByUsername(cls, username):
+    #     '''Admin User search'''
+    #     return cls.query.get_or_404(username);
+
+    @classmethod
+    def admin_banAndDeleteUser(cls, username):
+        '''Admin Feedback Delete.'''
+        
+        selectedUser = cls.searchUserByUsername(username);
+
+        if selectedUser:
+            try:
+                db.session.delete(selectedUser);
+                db.session.commit();
+            except Exception as error:
+                db.session.flush();
+                db.session.rollback();
+                return error;
+
+        else:
+            return f'<User {username}> does not exist!';
 
 class Feedback(db.Model):
 
@@ -176,5 +212,31 @@ class Feedback(db.Model):
         db.session.commit();
         return;
 
+    # Admin Methods
+    @property
+    def admin_FeedbackVerbose(self):
+        '''Feedback object representation visible to admins.'''
+        return f'Feedback {self.id}: {self.title} by {self.author}\n{self.content}.';
 
+    @classmethod
+    def admin_returnAllFeedback(cls):
+        '''Admin Feedback Search.'''
+        return cls.query.all();
 
+    @classmethod
+    def admin_deleteFeedback(cls, feedbackID):
+        '''Admin Feedback Delete.'''
+        
+        selectedFeedback = cls.searchFeedbackByID(feedbackID);
+
+        if selectedFeedback:
+            try:
+                db.session.delete(selectedFeedback);
+                db.session.commit();
+            except Exception as error:
+                db.session.flush();
+                db.session.rollback();
+                return error;
+
+        else:
+            return f'<Feedback {feedbackID}> does not exist!';

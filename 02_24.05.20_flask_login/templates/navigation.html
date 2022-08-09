@@ -7,16 +7,22 @@
             <td>
 
             </td>
-            {% if username %}
+            {% if session['username'] %}
+                {% if session['username'] %}
+                    <td>
+                        <a href="/admin/manage">Admin Panel</a>
+                    </td>
+                {% else %}
+                    <td>
+                    </td>
+                {% endif %}
                 <td>
-                    <a href="/users/{{username}}">{{username}} Profile</a>
+                    <a href="/users/{{session['username']}}">{{session['username']}} Profile</a>
                 </td>
-                <td>
-                    <a href="/users/{{username}}/feeddback/add">Add Feedback</a>
                 <td>
                     <a href="/logout">Logout</a>
                 </td>
-                </td>
+
             {% else %}
                 <td>
 
