@@ -5,11 +5,11 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Springboard 19.05.17 Boggle</title>
-	<link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}">
-	<!-- NOte: Add axios -->
+	<!-- <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}"> -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 	{% block content %}{% endblock %}
 </body>
-<script></script>
+<script src="{{url_for('static', filename='index.js')}}"></script>
 </html>

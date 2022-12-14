@@ -1,11 +1,11 @@
-{% extesnds 'base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
-<form method="POST">
+<form method="POST" action="/">
 	<label for='boggleWord'><strong>Word</strong>: </label>
-	<input name = 'boggleWord'
+	<input id='boggleWordInput' name = 'boggleWord'
 		type='text'>
-	<button id="submitTestWord">Submit</button>
+	<button id="submitTestWord" type="submit">Submit</button>
 </form>
 
 <table>
@@ -25,6 +25,17 @@
 
 </table>
 
-<button id="reStart">(Re)start Game!</button>
+<button id="reStartGame">(Re)start Game!</button>
+<div>
+	<p id="submissionFeedback"></p>
+<!-- 
+	<p><strong>Time Left</strong>: <span id="timeRemaining">60</span> remaining</p>
+	<p><strong>Score</strong>: <span id="gameScore"></span></p> -->
+	<br/>
+	<p><strong>Session Details</strong>:</p>
+	<ul id="sessionDetails">
+		
+	</ul>
+</div>
 
 {% endblock content %}

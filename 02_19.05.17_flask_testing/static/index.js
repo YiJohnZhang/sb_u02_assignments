@@ -3,42 +3,101 @@ let sessionScore = 0;
 let submittedWords = new Set([]);
 
 // Game Application Variables
-let gameplayCount = 0;	//s6, delete
 let gameStarted = false;
+let intervalID;
 let timer = 60;
+
+// HTMLDOMElements
+let submitFormButton;
+let feedbackParagraph;
+let sessionDatalUL;
+
+const endGame = () => {
+
+	submitFormButton.removeEventListener('click', (evt) => console.log(evt));
+	clearInterval(intervalID);
+
+	axios.post('/endgame', {
+		'score': sessionScore
+	}).then((response) => {
+
+		const {gameSession} = response.data;
+		
+		sessionDatalUL.innerHTML = '';
+		for(let {score, session} of gameSession){
+
+			// console.log(`${session}: ${score}`)
+			const newLiElement = document.createElement('li');
+			newLiElement.innerText = `Session ${session+1}: ${score} points`;
+			sessionDatalUL.appendChild(newLiElement);
+			
+		}
+
+
+	}).catch((error) => console.log(error));
+
+}
+
+const keepTrackOfTime = () => {
+
+	timer = timer - 1;
+	console.log(`timer: ${timer}; score: ${sessionScore}`);
+	
+	if(timer < 0)
+		endGame();	
+		
+}
 
 const restartGame = () => {
 	
 	// Game Session Variables
-	sessionScore = 0
+	sessionScore = 0;
 	submittedWords = new Set([]);
 
 	// Game Application Variables
-	gameStarted = !gameStarted;
 	timer = 60;
 
 }
 
 const allowUserToPlayGame = () => {
 
-	const submitFormButton = document.getElementById('submitTestWord');
-	submitFormButton.addEventListener('click', (evt) => {
+	submitFormButton.addEventListener('click', async (evt) => {
 		
 		evt.preventDefault();
-		// axios post call
 
-		const {result, word} = /*...*/;
+		const submittedWord = document.getElementById('boggleWordInput').value;
 
-		if(word && !submittedWords.has(word)){
+		// const response = await axios.post('/', {
+		// 	boggleWord: submittedWord
+		// });
+
+		axios.post('/', {
+			boggleWord: submittedWord
+		})
+		.then((response) => {
+
+			const {result, word} = response.data;
+
+			if(word && !submittedWords.has(word)){
 		
-			sessionScore = sessionScore + word.length;
-			submittedWords.add(word);
+				sessionScore = sessionScore + word.length;
+				submittedWords.add(word);
 
-		}else if (word && submittedWords.has(word)){
+				feedbackParagraph.innerText = `"${word}" accepted!`;
 
-			// do something to say word already used.
+			}else if (word && submittedWords.has(word)){
+
+				// do something to say word already used.
+
+				feedbackParagraph.innerText = `"${word}" is already submitted`;
 		
-		}
+			}else{
+
+				feedbackParagraph.innerText = `"${submittedWord}" rejected: ${result}`;
+			}
+
+		})
+		.catch((error) => console.log(error));
 
 	});
 
@@ -46,20 +105,25 @@ const allowUserToPlayGame = () => {
 
 const setupGame = () => {
 
+	submitFormButton = document.getElementById('submitTestWord');
+	feedbackParagraph = document.getElementById('submissionFeedback');
+	sessionDatalUL = document.getElementById('sessionDetails');
+
 	const reStartGameButton = document.getElementById('reStartGame');
 	reStartGameButton.addEventListener('click', (evt) => {
 
-		restartGame();
+		gameStarted = !gameStarted;
 
 		if(gameStarted){
 
+			intervalID = setInterval(keepTrackOfTime, 1000);
+			console.log(intervalID);
 			allowUserToPlayGame();
-			// timer countdown (step5)
 
 		}else{
 
-			submitFormButton.removeEventListener('click');
-			// 
+			endGame();
+			restartGame();
 
 		}
 
@@ -67,4 +131,4 @@ const setupGame = () => {
 
 }
 
-document.addEventListener('load', setupGame)
+window.addEventListener('load', setupGame)
