@@ -1,0 +1,30 @@
+{% extesnds 'base.html' %}
+
+{% block content %}
+<form method="POST">
+	<label for='boggleWord'><strong>Word</strong>: </label>
+	<input name = 'boggleWord'
+		type='text'>
+	<button id="submitTestWord">Submit</button>
+</form>
+
+<table>
+	
+	{% for row in boggleBoard %}
+		<tr>
+
+			{% for element in row %}
+
+				<td>{{element}}</td>
+
+			{% endfor %}
+
+		</tr>
+	
+	{% endfor %}
+
+</table>
+
+<button id="reStart">(Re)start Game!</button>
+
+{% endblock content %}
