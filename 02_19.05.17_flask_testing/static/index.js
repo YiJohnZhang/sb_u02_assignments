@@ -53,7 +53,6 @@ const setupGame = () => {
 
 		if(gameStarted){
 
-			// gameplayCount = gameplayCount + 1;	//s6: delete
 			allowUserToPlayGame();
 			// timer countdown (step5)
 
